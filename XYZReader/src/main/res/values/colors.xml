@@ -1,0 +1,53 @@
+<!-- File created by the Android Action Bar Style Generator
+
+     Copyright (C) 2012 readyState Software Ltd
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<!--<resources>-->
+<!--<color name="photo_placeholder">#ccc</color>-->
+
+<!--<color name="theme_primary">#04561A</color>-->
+<!--<color name="theme_primary_dark">#04561A</color>-->
+<!--<color name="theme_accent">#04561A</color>-->
+<!--<color name="ltgray">#ffe0e0e0</color>-->
+<!--</resources>-->
+
+<resources>
+
+    <!-- Theme Colors -->
+    <color name="photo_placeholder">#CCCCCC</color>
+    <color name="theme_primary">#00AA8D</color>
+    <color name="theme_primary_dark">#008975</color>
+    <color name="theme_primary_light">#00BF9A</color>
+    <color name="theme_accent">#F99B1D</color>
+    <color name="theme_secondary">#FF6700</color>
+    <color name="theme_secondary_dark">#A34200</color>
+    <color name="theme_secondary_light">#FF8837</color>
+    <color name="theme_secondary_lighter">#FFA263</color>
+    <color name="theme_primary_text">#1B0000</color>
+    <color name="theme_secondary_text">#FFFFFF</color>
+
+    <!-- Material Palette Colors-->
+    <color name="grey_50">#FAFAFA</color>
+    <color name="grey_100">#F5F5F5</color>
+    <color name="grey_200">#EEEEEE</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="grey_400">#BDBDBD</color>
+    <color name="grey_500">#9E9E9E</color>
+    <color name="grey_600">#757575</color>
+    <color name="grey_700">#616161</color>
+    <color name="grey_800">#424242</color>
+
+</resources>
