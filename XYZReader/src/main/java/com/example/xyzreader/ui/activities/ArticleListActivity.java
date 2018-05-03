@@ -8,7 +8,9 @@ import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -19,13 +21,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.data.UpdaterService;
 import com.example.xyzreader.ui.helper.DynamicHeightNetworkImageView;
 import com.example.xyzreader.ui.helper.ImageLoaderHelper;
-import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,64 +45,75 @@ public class ArticleListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = ArticleListActivity.class.toString();
-    private static final String TYPEFACE_TOOLBAR = "Rosario-Bold.otf";
-    private static final String TYPEFACE_TEXT = "notosans_r.ttf";
-    private static final String TOOLBAR_TITLE_TEXTVIEW = "mTitleTextView";
-    public static Context sContext;
+    private static final String TYPEFACE_TEXT = "ClearSans-Regular.ttf";
+    private static final String TYPEFACE_TEXT_BOLD = "ClearSans-Medium.ttf";
 
-    private Toolbar mToolbar;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView mRecyclerView;
+    public static Context sContext;
+    private boolean mIsRefreshing = false;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.ENGLISH);
-    // Use default locale format
     private SimpleDateFormat outputFormat = new SimpleDateFormat();
-    // Most time functions can only handle 1902 - 2037
     private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.appbar)
+    AppBarLayout mAppbar;
+
+    private BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (UpdaterService.BROADCAST_ACTION_STATE_CHANGE.equals(intent.getAction())) {
+                mIsRefreshing = intent.getBooleanExtra(UpdaterService.EXTRA_REFRESHING, false);
+                updateRefreshingUI();
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_list);
+
         sContext = this;
+        ButterKnife.bind(this);
 
-        //mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
-
-        //final View toolbarContainerView = findViewById(R.id.toolbar_container);
-
-        mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
-
-        mRecyclerView = findViewById(R.id.recycler_view);
         getLoaderManager().initLoader(0, null, this);
 
         if (savedInstanceState == null) {
             refresh();
         }
 
+        // Prepare Toolbar widget
+        setupToolbar();
+    }
+
+    /**
+     * Method to customize the Toolbar widget
+     */
+    private void setupToolbar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mAppbar.setElevation(4);
+        }
+
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        setToolbarTypeface(mToolbar);
-    }
-
-    private void setToolbarTypeface(Toolbar toolbar) {
-        TextView toolbarTitleTextView = null;
 
         try {
-            Field field = Toolbar.class.getDeclaredField(TOOLBAR_TITLE_TEXTVIEW);
-            field.setAccessible(true);
-            toolbarTitleTextView = (TextView) field.get(toolbar);
-        } catch (NoSuchFieldException nse) {
-            Log.e(TAG, nse.getMessage());
-        } catch (IllegalAccessException iae) {
-            Log.e(TAG, iae.getMessage());
-        }
-
-        if (toolbarTitleTextView != null) {
-            toolbarTitleTextView.setTypeface(Typeface.createFromAsset(getAssets(), TYPEFACE_TOOLBAR));
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        } catch (NullPointerException ne) {
+            Log.e(TAG, ne.getMessage());
         }
     }
 
+    /**
+     * Method to start service
+     */
     private void refresh() {
         startService(new Intent(this, UpdaterService.class));
     }
@@ -116,18 +130,6 @@ public class ArticleListActivity extends AppCompatActivity implements
         super.onStop();
         unregisterReceiver(mRefreshingReceiver);
     }
-
-    private boolean mIsRefreshing = false;
-
-    private BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (UpdaterService.BROADCAST_ACTION_STATE_CHANGE.equals(intent.getAction())) {
-                mIsRefreshing = intent.getBooleanExtra(UpdaterService.EXTRA_REFRESHING, false);
-                updateRefreshingUI();
-            }
-        }
-    };
 
     private void updateRefreshingUI() {
         mSwipeRefreshLayout.setRefreshing(mIsRefreshing);
@@ -154,6 +156,9 @@ public class ArticleListActivity extends AppCompatActivity implements
         mRecyclerView.setAdapter(null);
     }
 
+    /**
+     * Custom Adapter class used to display the list of articles
+     */
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
         private Cursor mCursor;
 
@@ -170,15 +175,20 @@ public class ArticleListActivity extends AppCompatActivity implements
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = getLayoutInflater().inflate(R.layout.list_item_article, parent, false);
-            final ViewHolder vh = new ViewHolder(view);
+            final ViewHolder viewHolder = new ViewHolder(view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                            ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition()))));
+                    Log.d("XXX", "Adapter pos = " + viewHolder.getAdapterPosition());
+                    /*startActivity(new Intent(Intent.ACTION_VIEW,
+                            ItemsContract.Items.buildItemUri(getItemId(viewHolder.getAdapterPosition()))));*/
+                    Intent intent = new Intent(Intent.ACTION_VIEW,
+                            ItemsContract.Items.buildItemUri(getItemId(viewHolder.getAdapterPosition())));
+                    intent.putExtra(ArticleDetailActivity.KEY_ITEM_POSITION, viewHolder.getAdapterPosition());
+                    startActivity(intent);
                 }
             });
-            return vh;
+            return viewHolder;
         }
 
         private Date parsePublishedDate() {
@@ -200,14 +210,14 @@ public class ArticleListActivity extends AppCompatActivity implements
 
             Date publishedDate = parsePublishedDate();
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
-                holder.textViewDate.setText(
+                holder.textviewDate.setText(
                         DateUtils.getRelativeTimeSpanString(
                                 publishedDate.getTime(),
                                 System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
                                 DateUtils.FORMAT_ABBREV_ALL).toString());
             }
 
-            holder.textViewAuthor.setText(mCursor.getString(ArticleLoader.Query.AUTHOR));
+            holder.textviewAuthor.setText(mCursor.getString(ArticleLoader.Query.AUTHOR));
 
             holder.thumbnailView.setImageUrl(
                     mCursor.getString(ArticleLoader.Query.THUMB_URL),
@@ -222,21 +232,23 @@ public class ArticleListActivity extends AppCompatActivity implements
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public DynamicHeightNetworkImageView thumbnailView;
+        @BindView(R.id.article_image)
+        DynamicHeightNetworkImageView thumbnailView;
+        @BindView(R.id.article_title)
         public TextView textviewTitle;
-        public TextView textViewDate;
-        public TextView textViewAuthor;
+        @BindView(R.id.article_date)
+        public TextView textviewDate;
+        @BindView(R.id.article_author)
+        public TextView textviewAuthor;
 
         public ViewHolder(View view) {
             super(view);
-            thumbnailView = view.findViewById(R.id.article_image);
-            textviewTitle = view.findViewById(R.id.article_title);
-            textViewDate = view.findViewById(R.id.article_date);
-            textViewAuthor = view.findViewById(R.id.article_author);
+            ButterKnife.bind(this, view);
 
             // set custom fonts
-            textViewDate.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
-            textViewAuthor.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
+            textviewTitle.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT_BOLD));
+            textviewDate.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
+            textviewAuthor.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
         }
     }
 }

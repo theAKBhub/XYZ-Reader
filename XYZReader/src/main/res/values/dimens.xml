@@ -1,13 +1,23 @@
 <resources>
-    <!-- detail -->
-    <dimen name="detail_title_text_size">32sp</dimen>
-    <dimen name="detail_body_text_size">18sp</dimen>
-    <dimen name="textsize_small">14sp</dimen>
-    <item name="detail_body_line_spacing_multiplier" format="float" type="fraction">1.15</item>
 
-    <dimen name="fab_elevation">2dp</dimen>
+    <!-- Common Dimensions -->
+    <dimen name="dimen_4dp">4dp</dimen>
+    <dimen name="dimen_6dp">6dp</dimen>
+    <dimen name="dimen_8dp">8dp</dimen>
+    <dimen name="dimen_16dp">16dp</dimen>
+    <dimen name="dimen_24dp">24dp</dimen>
+
+    <!-- Specific Dimensions -->
+    <dimen name="fab_elevation">6dp</dimen>
     <dimen name="fab_press_translation_z">6dp</dimen>
     <dimen name="fab_margin">24dp</dimen>
-    <dimen name="appbar_expanded">200dp</dimen>
+    <dimen name="appbar_expanded">280dp</dimen>
+    <item format="float" name="detail_line_spacing" type="fraction">1.15</item>
+
+    <!-- Font Sizes -->
+    <dimen name="textsize_small">15sp</dimen>
+    <dimen name="textsize_medium">16sp</dimen>
+    <dimen name="textsize_large">18sp</dimen>
+    <dimen name="textsize_xlarge">24sp</dimen>
 
 </resources>

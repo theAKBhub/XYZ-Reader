@@ -30,8 +30,142 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+
+    <!-- Article List Styles -->
+
+    <style name="ArticleRecyclerView">
+        <item name="android:scrollbarStyle">outsideOverlay</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:padding">@dimen/dimen_4dp</item>
+        <item name="android:clipToPadding">false</item>
+    </style>
+
+    <style name="ToolbarLogo">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/dimen_8dp</item>
+        <item name="android:paddingBottom">@dimen/dimen_8dp</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
+
+    <style name="ToolbarLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <style name="AppbarLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/AppTheme.AppBarOverlay</item>
+    </style>
+
+    <style name="ListItemCardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/dimen_4dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+    </style>
+
+    <style name="ListItemImage">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/photo_placeholder</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
+    <style name="ArticleListItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/dimen_16dp</item>
+        <item name="android:paddingRight">@dimen/dimen_16dp</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="ArticleListItem.Title">
+        <item name="android:paddingTop">@dimen/dimen_16dp</item>
+        <item name="android:paddingBottom">@dimen/dimen_4dp</item>
+        <item name="android:maxLines">4</item>
+        <item name="android:textColor">@color/theme_secondary</item>
+        <item name="android:textSize">@dimen/textsize_medium</item>
+    </style>
+
+    <style name="ArticleListItem.Author">
+        <item name="android:layout_marginTop">@dimen/dimen_8dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/theme_primary_dark</item>
+        <item name="android:textSize">@dimen/textsize_small</item>
+    </style>
+
+    <style name="ArticleListItem.Date">
+        <item name="android:layout_marginTop">@dimen/dimen_4dp</item>
+        <item name="android:paddingBottom">@dimen/dimen_24dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/theme_primary_text</item>
+        <item name="android:textSize">@dimen/textsize_small</item>
+    </style>
+
+
+    <!-- Article Detail Styles -->
+
+    <style name="AppbarImage">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:adjustViewBounds">true</item>
+    </style>
+
+    <style name="AppbarTitleHolder">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">start|bottom</item>
+        <item name="android:padding">@dimen/dimen_16dp</item>
+        <item name="android:background">@color/theme_black_alpha</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="AppbarTitle">
+        <item name="android:textSize">@dimen/textsize_large</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="AppbarSubtitle">
+        <item name="android:textSize">@dimen/textsize_medium</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="FABShareArticle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/fab_margin</item>
+        <item name="android:contentDescription">@string/action_share</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="TextViewArticleBody">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:linksClickable">true</item>
+        <item name="android:padding">@dimen/dimen_16dp</item>
+        <item name="android:textSize">@dimen/textsize_large</item>
+        <item name="android:textColor">@color/theme_primary_text</item>
+        <item name="android:textColorLink">@color/theme_accent</item>
+        <item name="android:lineSpacingMultiplier">@fraction/detail_line_spacing</item>
+    </style>
 
 </resources>

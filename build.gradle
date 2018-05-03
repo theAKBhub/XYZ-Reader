@@ -24,6 +24,7 @@ allprojects {
     ext {
         androidSupportVersion = "27.1.1"
         butterknifeLibraryVersion = '8.8.1'
+        picassoLibraryVersion = '2.71828'
     }
 }
 

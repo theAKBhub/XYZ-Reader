@@ -9,5 +9,8 @@
 
     <string name="up">Up</string>
     <string name="info_date_parse">Passing today\'s date</string>
+    <string name="placeholder_title">Article Title</string>
+    <string name="placeholder_author">Article Author</string>
+    <string name="placeholder_date">Jan 01, 1998</string>
 
 </resources>
