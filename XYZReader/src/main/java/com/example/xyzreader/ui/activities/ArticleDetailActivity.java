@@ -2,6 +2,7 @@ package com.example.xyzreader.ui.activities;
 
 import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.design.widget.AppBarLayout.OnOffsetChangedListener;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -28,6 +32,7 @@ import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ArticleLoader.Query;
 import com.example.xyzreader.ui.fragments.ArticleDetailFragment;
 import com.squareup.picasso.Picasso;
+import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,21 +43,14 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
 
     private static final String TAG = ArticleDetailActivity.class.getSimpleName();
     public static final String KEY_ITEM_POSITION = "item_position";
+    public static final String TYPEFACE_TEXT = "notosans_r.ttf";
 
     final Context mContext = this;
     private DetailPagerAdapter mDetailPagerAdapter;
     private Cursor mCursor;
-    private long mSelectedItemId;
-    private long mStartId;
     private String mArticleTitle;
-    private Date mArticleDate;
-    private String mArticleAuthor;
-    private String mArticleContent;
     private Animation mShowAnimation;
-
     private int mPosition;
-    private int temp;
-    private int start;
 
     @BindView(R.id.viewpager)
     ViewPager mViewPager;
@@ -72,7 +70,6 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
     FloatingActionButton mFabShareArticle;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.ENGLISH);
-    private SimpleDateFormat outputFormat = new SimpleDateFormat();
     private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2, 1, 1);
 
 
@@ -82,7 +79,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
         setContentView(R.layout.activity_article_detail);
         ButterKnife.bind(this);
 
-        mPosition = temp = start = 0;
+        mPosition = 0;
 
         setSupportActionBar(mToolbar);
         if (mToolbar != null) {
@@ -92,43 +89,34 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
         }
 
         mShowAnimation = AnimationUtils.loadAnimation(mContext, R.anim.poster_anim);
+        //mTextViewTitle.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TITLE));
+        //mTextViewSubtitle.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
 
         getLoaderManager().initLoader(0, null, this);
 
         if (savedInstanceState == null) {
             if (getIntent() != null && getIntent().getData() != null) {
                 if (getIntent().hasExtra(KEY_ITEM_POSITION)) {
-                    mPosition = temp = getIntent().getExtras().getInt(KEY_ITEM_POSITION, 0);
-                    Log.d("XXX YYY", "mPosition rcvd = " + mPosition);
+                    mPosition = getIntent().getExtras().getInt(KEY_ITEM_POSITION, 0);
                 }
             }
         }
 
-        mDetailPagerAdapter = new DetailPagerAdapter(getSupportFragmentManager());
-
-        //mViewPager.setAdapter(mDetailPagerAdapter);
-        mViewPager.setPageMargin((int) TypedValue
-                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics()));
-
+        // OnPageChangeListener on ViewPager to handle swiping viewpager to change article
         mViewPager.addOnPageChangeListener(new SimpleOnPageChangeListener() {
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
             }
 
             @Override
             public void onPageSelected(int position) {
-
-                Log.d("XXX YYY", "position = " + position);
-
                 if (mCursor != null) {
                     mCursor.moveToPosition(position);
                 }
-
-                mSelectedItemId = mCursor.getLong(ArticleLoader.Query._ID);
                 mPosition = position;
                 displayArticleData();
-                mDetailPagerAdapter.getItem(mPosition);
             }
 
             @Override
@@ -136,7 +124,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
             }
         });
 
-
+        // OffsetChanged Listener on Appbar to handle display of title in expanded and collapsed mode
         mAppbarLayout.addOnOffsetChangedListener(new OnOffsetChangedListener() {
             boolean isShowTitle = true;
             int scrollRange = -1;
@@ -153,12 +141,16 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
                     isShowTitle = false;
                 }
             }
-
         });
 
-
+        // OnClickListener for FAB
+        mFabShareArticle.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareArticle();
+            }
+        });
     }
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -170,22 +162,13 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
         mCursor = cursor;
 
         displayArticleData();
-        mViewPager.setAdapter(mDetailPagerAdapter);
-        mDetailPagerAdapter.notifyDataSetChanged();
 
-        // Select the start ID
-        if (mStartId > 0) {
-            mCursor.moveToFirst();
-            while (!mCursor.isAfterLast()) {
-                if (mCursor.getLong(ArticleLoader.Query._ID) == mStartId) {
-                    final int position = mCursor.getPosition();
-                    mViewPager.setCurrentItem(position, false);
-                    break;
-                }
-                mCursor.moveToNext();
-            }
-            mStartId = 0;
-        }
+        // Set ViewPager to Adapter
+        mDetailPagerAdapter = new DetailPagerAdapter(getSupportFragmentManager(), mCursor);
+        mViewPager.setAdapter(mDetailPagerAdapter);
+        mViewPager.setPageMargin((int) TypedValue
+                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics()));
+        mViewPager.setCurrentItem(mPosition);
     }
 
     @Override
@@ -194,8 +177,12 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
         mDetailPagerAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Method to display article details (image, title, author, date)
+     */
     public void displayArticleData() {
         mCursor.moveToPosition(mPosition);
+
         Picasso.get()
                 .load(mCursor.getString(Query.PHOTO_URL))
                 .placeholder(R.drawable.photo_background_protection)
@@ -211,48 +198,62 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
         Date date = parsePublishedDate(mCursor.getString(Query.PUBLISHED_DATE));
 
         if (!date.before(START_OF_EPOCH.getTime())) {
-
             dateParsed = DateUtils.getRelativeTimeSpanString(
                     date.getTime(),
                     System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
                     DateUtils.FORMAT_ABBREV_ALL).toString();
         }
 
-        mTextViewSubtitle.setText(mCursor.getString(Query.AUTHOR) + " / " + dateParsed);
-
-        mArticleContent = mCursor.getString(Query.BODY); Log.d("XXX YYY", mArticleContent.substring(0, 50));
-
+        String subtitle = mCursor.getString(Query.AUTHOR) + " / " + dateParsed;
+        mTextViewSubtitle.setText(subtitle);
     }
 
-
+    /**
+     * Inner Adapter class used for fragment that displays article content
+     */
     private class DetailPagerAdapter extends FragmentStatePagerAdapter {
+        private WeakReference<Cursor> mCursorWeakRef;
 
-        public DetailPagerAdapter(android.support.v4.app.FragmentManager fm) {
+        public DetailPagerAdapter(android.support.v4.app.FragmentManager fm, Cursor cursor) {
             super(fm);
+            mCursorWeakRef = new WeakReference<>(cursor);
         }
 
         @Override
         public android.support.v4.app.Fragment getItem(int position) {
-            //mCursor.moveToPosition(mPosition);
-            //return ArticleDetailFragment.newInstance(mCursor.getString(Query.BODY));
-            return ArticleDetailFragment.newInstance(mArticleContent);
+            mCursorWeakRef.get().moveToPosition(position);
+            return ArticleDetailFragment.newInstance(mCursorWeakRef.get().getString(Query.BODY));
         }
 
         @Override
         public int getCount() {
-            return (mCursor != null) ? mCursor.getCount() : 0;
+            return mCursorWeakRef.get().getCount();
         }
     }
 
+    /**
+     * Method to parse published date to a SimpleDateFormat date
+     * @param date
+     * @return SimpleDateFormat date
+     */
     private Date parsePublishedDate(String date) {
         try {
-            //String date = mCursor.getString(ArticleLoader.Query.PUBLISHED_DATE);
             return dateFormat.parse(date);
         } catch (ParseException ex) {
             Log.e(TAG, ex.getMessage());
-            Log.i(TAG, "passing today's date");
+            Log.i(TAG, getString(R.string.info_date_parse));
             return new Date();
         }
     }
 
+    /**
+     * Method to share article when FAB is clicked
+     */
+    private void shareArticle() {
+        startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(this)
+                .setType("text/plain")
+                .setText(mArticleTitle)
+                .getIntent(), getString(R.string.action_share)));
+
+    }
 }

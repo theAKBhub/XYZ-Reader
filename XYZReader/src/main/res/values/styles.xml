@@ -88,6 +88,8 @@
         <item name="android:paddingLeft">@dimen/dimen_16dp</item>
         <item name="android:paddingRight">@dimen/dimen_16dp</item>
         <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">@dimen/textsize_small</item>
     </style>
 
     <style name="ArticleListItem.Title">
@@ -95,7 +97,8 @@
         <item name="android:paddingBottom">@dimen/dimen_4dp</item>
         <item name="android:maxLines">4</item>
         <item name="android:textColor">@color/theme_secondary</item>
-        <item name="android:textSize">@dimen/textsize_medium</item>
+        <item name="android:textSize">@dimen/textsize_large</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
 
     <style name="ArticleListItem.Author">
@@ -103,7 +106,6 @@
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/theme_primary_dark</item>
-        <item name="android:textSize">@dimen/textsize_small</item>
     </style>
 
     <style name="ArticleListItem.Date">
@@ -112,7 +114,6 @@
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/theme_primary_text</item>
-        <item name="android:textSize">@dimen/textsize_small</item>
     </style>
 
 
@@ -135,17 +136,20 @@
     </style>
 
     <style name="AppbarTitle">
+        <item name="android:textSize">@dimen/textsize_xlarge</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="AppbarSubtitle">
+        <item name="android:layout_marginTop">@dimen/dimen_8dp</item>
         <item name="android:textSize">@dimen/textsize_large</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="AppbarSubtitle">
-        <item name="android:textSize">@dimen/textsize_medium</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
 
     <style name="FABShareArticle">
@@ -162,7 +166,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:linksClickable">true</item>
         <item name="android:padding">@dimen/dimen_16dp</item>
-        <item name="android:textSize">@dimen/textsize_large</item>
+        <item name="android:textSize">@dimen/textsize_medium</item>
         <item name="android:textColor">@color/theme_primary_text</item>
         <item name="android:textColorLink">@color/theme_accent</item>
         <item name="android:lineSpacingMultiplier">@fraction/detail_line_spacing</item>

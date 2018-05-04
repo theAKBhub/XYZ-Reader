@@ -1,5 +1,7 @@
 package com.example.xyzreader.ui.fragments;
 
+import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,12 +16,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.example.xyzreader.R;
+import com.example.xyzreader.ui.activities.ArticleDetailActivity;
 
 public class ArticleDetailFragment extends Fragment {
 
     private static final String TAG = ArticleDetailFragment.class.getSimpleName();
     private static final String KEY_ARTICLE_CONTENT = "article_content";
 
+    private Context mDetailFragmentContext;
     private Unbinder mUnbinder;
     private View mRootView;
 
@@ -32,6 +36,12 @@ public class ArticleDetailFragment extends Fragment {
      * fragment (e.g. upon screen orientation changes).
      */
     public ArticleDetailFragment() {
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mDetailFragmentContext = context;
     }
 
     /**
@@ -55,6 +65,9 @@ public class ArticleDetailFragment extends Fragment {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
         mUnbinder = ButterKnife.bind(this, mRootView);
 
+        mTextViewArticle.setTypeface(Typeface.createFromAsset(mDetailFragmentContext.getAssets(),
+                ArticleDetailActivity.TYPEFACE_TEXT));
+
         if (getArguments() != null && getArguments().containsKey(KEY_ARTICLE_CONTENT)) {
             article = getArguments().getString(KEY_ARTICLE_CONTENT);
         }
@@ -66,36 +79,39 @@ public class ArticleDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //mTextViewArticle.setText(getArguments().getString(KEY_ARTICLE_CONTENT));
     }
 
+    /**
+     * Method to format raw article content before displaying on screen
+     */
     public void prepareArticleText(String articleText) {
         String a = articleText.replaceAll(">", "&gt;");
-        String a1=a.replaceAll("(\r\n){2}(?!(&gt;))", "<br><br>");
-        String a2=a1.replaceAll("(\r\n)"," ");
+        String a1 = a.replaceAll("(\r\n){2}(?!(&gt;))", "<br><br>");
+        String a2 = a1.replaceAll("(\r\n)", " ");
 
         //remove all text between [ and ]
-        String a3=a2.replaceAll("\\[.*?\\]","");
+        String a3 = a2.replaceAll("\\[.*?\\]", "");
 
         //put new line after i.e 1. Ebooks aren't marketing.
-        String a4=a3.replaceAll("(\\d\\.\\s.*?\\.)","$1<br>");
+        String a4 = a3.replaceAll("(\\d\\.\\s.*?\\.)", "$1<br>");
 
         //make text between * * bold
-        String a5=a4.replaceAll("\\*(.*?)\\*", "<b>$1</b>");
+        String a5 = a4.replaceAll("\\*(.*?)\\*", "<b>$1</b>");
 
         //remove all '>' from text such as 'are >'  but leave the first '>' in tact
-        String a6=a5.replaceAll("(\\w\\s)&gt;", "$1");
+        String a6 = a5.replaceAll("(\\w\\s)&gt;", "$1");
 
-        Spanned a7= Html.fromHtml(a6);
+        // replace double hyphen with single hyphen
+        String a7 = a5.replaceAll("--", " - ");
 
-        mTextViewArticle.setText(a7.toString());
+        Spanned a8 = Html.fromHtml(a7);
+
+        mTextViewArticle.setText(a8.toString());
     }
-
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
     }
-
 }

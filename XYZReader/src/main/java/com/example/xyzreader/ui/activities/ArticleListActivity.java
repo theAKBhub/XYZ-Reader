@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -52,7 +51,6 @@ public class ArticleListActivity extends AppCompatActivity implements
     private boolean mIsRefreshing = false;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.ENGLISH);
-    private SimpleDateFormat outputFormat = new SimpleDateFormat();
     private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
 
     @BindView(R.id.toolbar)
@@ -179,9 +177,6 @@ public class ArticleListActivity extends AppCompatActivity implements
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("XXX", "Adapter pos = " + viewHolder.getAdapterPosition());
-                    /*startActivity(new Intent(Intent.ACTION_VIEW,
-                            ItemsContract.Items.buildItemUri(getItemId(viewHolder.getAdapterPosition()))));*/
                     Intent intent = new Intent(Intent.ACTION_VIEW,
                             ItemsContract.Items.buildItemUri(getItemId(viewHolder.getAdapterPosition())));
                     intent.putExtra(ArticleDetailActivity.KEY_ITEM_POSITION, viewHolder.getAdapterPosition());
@@ -246,9 +241,9 @@ public class ArticleListActivity extends AppCompatActivity implements
             ButterKnife.bind(this, view);
 
             // set custom fonts
-            textviewTitle.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT_BOLD));
-            textviewDate.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
-            textviewAuthor.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
+//            textviewTitle.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT_BOLD));
+//            textviewDate.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
+//            textviewAuthor.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
         }
     }
 }
