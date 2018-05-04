@@ -211,6 +211,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
      * Inner Adapter class used for fragment that displays article content
      */
     private class DetailPagerAdapter extends FragmentStatePagerAdapter {
+
         private WeakReference<Cursor> mCursorWeakRef;
 
         public DetailPagerAdapter(android.support.v4.app.FragmentManager fm, Cursor cursor) {
@@ -232,7 +233,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
 
     /**
      * Method to parse published date to a SimpleDateFormat date
-     * @param date
+     *
      * @return SimpleDateFormat date
      */
     private Date parsePublishedDate(String date) {

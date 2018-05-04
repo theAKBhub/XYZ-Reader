@@ -8,9 +8,9 @@
     <dimen name="dimen_24dp">24dp</dimen>
 
     <!-- Specific Dimensions -->
-    <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="fab_elevation">@dimen/dimen_6dp</dimen>
     <dimen name="fab_press_translation_z">12dp</dimen>
-    <dimen name="fab_margin">24dp</dimen>
+    <dimen name="fab_margin">@dimen/dimen_24dp</dimen>
     <dimen name="appbar_expanded">280dp</dimen>
     <item format="float" name="detail_line_spacing" type="fraction">1.15</item>
 

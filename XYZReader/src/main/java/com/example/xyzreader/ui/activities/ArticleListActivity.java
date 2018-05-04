@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.example.xyzreader.R;
@@ -49,7 +50,7 @@ public class ArticleListActivity extends AppCompatActivity implements
     private boolean mIsRefreshing = false;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.ENGLISH);
-    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
+    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2, 1, 1);
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -59,6 +60,8 @@ public class ArticleListActivity extends AppCompatActivity implements
     RecyclerView mRecyclerView;
     @BindView(R.id.appbar)
     AppBarLayout mAppbar;
+    @BindInt(R.integer.list_column_count)
+    int mColumnCount;
 
     private BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
         @Override
@@ -141,9 +144,8 @@ public class ArticleListActivity extends AppCompatActivity implements
         Adapter adapter = new Adapter(cursor);
         adapter.setHasStableIds(true);
         mRecyclerView.setAdapter(adapter);
-        int columnCount = getResources().getInteger(R.integer.list_column_count);
         StaggeredGridLayoutManager sglm =
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
+                new StaggeredGridLayoutManager(mColumnCount, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(sglm);
     }
 
@@ -156,6 +158,7 @@ public class ArticleListActivity extends AppCompatActivity implements
      * Custom Adapter class used to display the list of articles
      */
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
+
         private Cursor mCursor;
 
         public Adapter(Cursor cursor) {
@@ -225,14 +228,15 @@ public class ArticleListActivity extends AppCompatActivity implements
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+
         @BindView(R.id.article_image)
         DynamicHeightNetworkImageView thumbnailView;
         @BindView(R.id.article_title)
-        public TextView textviewTitle;
+        TextView textviewTitle;
         @BindView(R.id.article_date)
-        public TextView textviewDate;
+        TextView textviewDate;
         @BindView(R.id.article_author)
-        public TextView textviewAuthor;
+        TextView textviewAuthor;
 
         public ViewHolder(View view) {
             super(view);

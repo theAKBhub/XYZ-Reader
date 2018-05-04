@@ -95,7 +95,7 @@
     <style name="ArticleListItem.Title">
         <item name="android:paddingTop">@dimen/dimen_16dp</item>
         <item name="android:paddingBottom">@dimen/dimen_4dp</item>
-        <item name="android:maxLines">4</item>
+        <item name="android:maxLines">@integer/list_title_maxlines</item>
         <item name="android:textColor">@color/theme_secondary</item>
         <item name="android:textSize">@dimen/textsize_large</item>
         <item name="android:fontFamily">sans-serif-condensed</item>

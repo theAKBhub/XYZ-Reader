@@ -10,7 +10,7 @@
         android:id="@+id/appbar_layout"
         style="@style/AppbarLayout"
         android:layout_height="@dimen/appbar_expanded"
-        android:elevation="4dp"
+        android:elevation="@dimen/dimen_4dp"
         tools:ignore="UnusedAttribute">
 
         <android.support.design.widget.CollapsingToolbarLayout

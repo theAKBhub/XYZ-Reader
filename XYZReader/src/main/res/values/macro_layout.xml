@@ -1,3 +1,4 @@
 <resources>
     <integer name="list_column_count">2</integer>
+    <integer name="list_title_maxlines">4</integer>
 </resources>
