@@ -44,8 +44,6 @@ public class ArticleListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = ArticleListActivity.class.toString();
-    private static final String TYPEFACE_TEXT = "ClearSans-Regular.ttf";
-    private static final String TYPEFACE_TEXT_BOLD = "ClearSans-Medium.ttf";
 
     public static Context sContext;
     private boolean mIsRefreshing = false;
@@ -239,11 +237,6 @@ public class ArticleListActivity extends AppCompatActivity implements
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-
-            // set custom fonts
-//            textviewTitle.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT_BOLD));
-//            textviewDate.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
-//            textviewAuthor.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
         }
     }
 }

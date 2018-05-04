@@ -81,6 +81,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
 
         mPosition = 0;
 
+        // Prepare Toolbar
         setSupportActionBar(mToolbar);
         if (mToolbar != null) {
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -89,8 +90,6 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
         }
 
         mShowAnimation = AnimationUtils.loadAnimation(mContext, R.anim.poster_anim);
-        //mTextViewTitle.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TITLE));
-        //mTextViewSubtitle.setTypeface(Typeface.createFromAsset(sContext.getAssets(), TYPEFACE_TEXT));
 
         getLoaderManager().initLoader(0, null, this);
 
